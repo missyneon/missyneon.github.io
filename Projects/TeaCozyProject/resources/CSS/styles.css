@@ -1,0 +1,184 @@
+html,body {
+    font-family: "Helvetica", sans-serif;
+    font-size: 22px;
+    color: seashell;
+    background-color: black;
+    margin: 0;
+}
+
+
+a {
+    color: seashell;
+}
+
+
+#header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    position: fixed;
+    height: 3.2rem; 
+    border-bottom: 1px solid seashell;
+    background-color: black;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    
+}
+
+#header img {
+    height: 2.3rem;
+    width: auto;
+    margin: 9.5px 10px;
+    
+}
+
+#navbar {
+    display: flex;
+}
+
+.link {
+    padding: 1rem;
+   
+}
+
+#missionContainer {      
+    position: relative;
+    top: 71px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("images/img-mission-background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0;
+    margin-bottom: 69px;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+#mission {
+    height: 20%;
+    width: 100%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+ 
+#tea {
+    position: relative;
+    top: 69px; 
+    text-align: center;
+    max-width: 1000px;
+    margin: 69px auto;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.teaItem {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    
+    
+}
+
+.teaGallery img {
+    width: 300px;
+    height: 200px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.teaGallery p {
+    padding: 0px;
+    margin: 0px;
+}
+
+#locationContainer {
+    position: relative;
+    top: 71px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("images/img-locations-background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 1200px;    
+    margin: 0 auto;
+}
+
+
+#location {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    text-align: center;
+    background-color: transparent;
+    
+}
+
+.locationDetail {
+    width: 300px;
+    margin: 15px 20px;
+    background-color: black;
+
+}
+
+footer {
+    position: relative;
+    top: 71px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#copyright {
+    text-align: left;
+    margin: 20px;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    #header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: wrap;
+        padding-right: 0;
+        margin-right: 0;
+        position: fixed;
+        height: 69px;
+    }
+    
+    #logo {
+        text-align: center;
+        font-size: 2.5rem;
+    }
+    #navbar {
+        text-align: right;
+        display: block;
+        padding-right: 0;
+        margin-right: 0;
+        
+    }
+
+    .link {
+        padding-right: 0;
+        margin-right: 0;
+    }
+
+
+
+}
+

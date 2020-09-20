@@ -1,0 +1,117 @@
+html {
+    font-size: 16px;
+    font-family: 'Lexend Mega', sans-serif;
+}
+
+#header {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 3rem;
+}
+
+#navbar {
+    display: inline-flex;
+    justify-content: space-around;
+    flex-grow: 2;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+a {
+    color: black;
+}
+
+#missionStatement {
+    background-color: white;
+    margin: 0%;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#missionStatementContainer {
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+    background-image: url("images/missionStatementBackground.jpg");
+    background-repeat:  no-repeat;
+    background-size: 1500px;
+    margin: 3rem;
+}
+
+#portfolioContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#portfolioStatement {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#portfolioGallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    
+}
+
+.galleryItem {
+    display: flex;    
+    justify-content: space-around;
+    
+    
+}
+
+.imgItem {
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+    padding: 10px;
+    height: auto;
+    
+}
+
+.paragraphItem {
+    padding: 5px;
+    min-width: 240px;
+    text-align: center;
+    
+}
+
+#teamGallery {
+    padding: 0.5rem 10rem;
+    background-image: url("images/teamBackground.jpg");
+    background-repeat:  no-repeat;
+    background-size: 2000px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    /*align-items: baseline;*/
+}
+
+.teamItem {
+    color: white;
+    text-align: center;
+}
+
+#investmentTeamContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.statement {
+    text-align: center;
+}
+
+#copyright {
+    margin: 2rem;
+    text-align: center;
+}

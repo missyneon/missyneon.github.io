@@ -1,0 +1,84 @@
+html {
+    font-size: 16px;
+   /* font-family: 'Lato', sans-serif;*/
+    font-family: 'Lemonada', cursive;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0rem 0rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.2rem;
+}
+
+li {
+    padding-right: 0.5rem;
+    display: inline;
+}
+
+header h1 {
+    margin: 7rem 0rem;
+    letter-spacing: 0.1rem;
+}
+
+body {
+    color: white;
+    background-image: url('images/innerSpirit.jpg');
+    background-repeat:  no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #030303;
+    background-size: cover;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0%;
+}
+
+.description {
+    width: 50%;
+    margin-bottom: 9rem;
+}
+
+.rating {
+    background-color: #030303;
+    margin-bottom: 9rem;
+    padding: 1rem;
+}
+
+.rating h1 {
+    width: 70%;
+}
+
+
+.gallery {
+    text-align: center;
+}
+
+.gallery img {
+    width: 50%;
+    margin: 0%;
+    padding: 0%; 
+}
+
+.copyright {
+    margin-top: 9rem;
+    background-color: #030303;
+    margin-bottom: 0%;
+    padding: 1rem;
+}
+
+@media only screen and (max-width:960px) {
+    li{
+        display: block;
+    }
+    body {
+        background-size: 100%;
+    }
+
+    header h1 {
+        width: 50%;
+    }
+}
+
+

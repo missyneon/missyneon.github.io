@@ -1,0 +1,142 @@
+/*#mainHeading {
+    
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding: 13px 127px;*/
+
+body {
+    font-family: "Nunito Sans", sans-serif;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.section {
+    border: 2px solid #a2a2a6;
+    margin: 0.5em;
+}
+
+.sectionHeading {
+    margin: 1.2em 0.4em;  
+}
+
+#coolBlue {
+    background-color: #2d5dcc;
+    width: 30%;
+    padding: 0.5em;
+    display: inline-block;
+    color: white;
+    text-align: center;
+    margin: 1.2em 0.4em; 
+}
+
+#pink {
+    background-color: #d957d9;
+    width: 30%;
+    padding: 0.5em;
+    display: inline-block;
+    text-align: center;
+    margin: 1.2em 0.4em;
+}
+
+#mintGreen {
+    background-color: #4fe0b0;
+    width: 30%;
+    padding: 0.5em;
+    display: inline-block;
+    text-align: center;
+    margin: 1.2em 0.4em;
+}
+
+#beige {
+    background-color: #efd9ca;
+    width: 30%;
+    padding: 0.5em;
+    display: inline-block;
+    text-align: center;
+    margin: 1.2em 0.4em;
+}
+
+#sourceCodeProSection, #nunitoSansSection, #poppinsSection {
+    display: inline-block;
+    width: 40%;
+    margin: 0.4em 0.4em;
+}
+
+#nunitoSansSection {
+    font-family: "Nunito Sans", sans-serif;    
+}
+
+#poppinsSection {
+    font-family: "Poppins", sans-serif;
+}
+
+#sourceCodeProSection h3{
+    font-family:  "Source Code Pro", monospace;
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+#sourceCodeProSection p {
+    font-family:  "Source Code Pro", monospace;
+}
+
+#nunitoSansSection h3{
+    font-family: "Nunito Sans", sans-serif;
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+#nunitoSansSection p {
+    font-family: "Nunito Sans", sans-serif;
+}
+
+#poppinsSection h3{
+    font-family: "Poppins", sans-serif;
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+#poppinsSection p {
+    font-family: "Poppins", sans-serif;
+}
+
+.normal{
+    font-style: normal;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+
+#mainPageHeadingSection {
+    margin: 0.4em 0.4em;
+    font-weight: 700;
+    Font-size: 26px;
+    Font-family: "Nunito Sans", sans-serif;   
+}
+
+#subheadingSection {
+    margin: 0.4em 0.4em;
+    font-weight: 500;
+    Font-size: 18px;
+    Font-family: "Poppins", sans-serif; 
+}
+
+#paragraphSection {
+    margin: 0.4em 0.4em; 
+    font-weight: 400;
+    Font-size: 14px;
+    Font-family: "Poppins", sans-serif;
+}
+
+ul {
+    margin: 1.2em 0.4em; 
+}
+
