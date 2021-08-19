@@ -1,0 +1,19 @@
+Header: The impact of COVID-related policies on crime in Wales.
+
+Nav bar:
+- Impact on overall crime 
+- Impact on different crime types 
+- Breakdown of crime per MSOA cluster 
+- Correlation between crime and structures
+
+Section 1: Overall crime count per year
+
+Section 2: Count of different crimes per year
+
+Section 3: 2020 crime cluster plot and analysis
+	- cluster plot
+	- overall crime count change per month in each cluster
+	- crime type breakdown per month in each cluster
+
+Section 4: Spearman's rank correlation plot betweeen crime cluster and crime opportunity structures
+

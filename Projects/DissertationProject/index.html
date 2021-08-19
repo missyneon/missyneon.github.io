@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Impact of COVID lockdowns on crime in Wales</title>
+    <link rel="stylesheet" href="resources/CSS/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Mega&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+   <div id="myBody">
+    <!-- Header -->
+    <div id="header">
+      <div id = "mainHeading">
+        <h1>The impact of COVID lockdowns on crime in Wales</h1>
+      </div>
+      <div id = "navbar">
+        <a href="#impactOnOverallCrimeContainer">Impact on overall crime</a>
+        <a href="#impactOnDiffCrimeTypesContainer">Impact on different crime types</a>
+        <a href="#crimePerMSOAclusterContainer">Breakdown of crime per MSOA cluster</a>
+        <a href="#corrBtwCrimeAndStructuresContainer">Correlation between crime and structures</a>
+      </div>     
+    </div>
+
+    <!-- Impact on overall crime Container -->
+    <div id="impactOnOverallCrimeContainer">
+      <div id="impactOnOverallCrime">
+        <div class="subHeading">
+            <h2>Impact on overall crime</h2>
+        </div>
+        <div class="plotGallery">
+            <div class="plotDetails">
+                <img src="resources/gallery/overall_crime_ggplot.jpg">
+                <p><i>Figure 1: Time series plot of crime in Wales</i></p>
+            </div>
+        </div>
+        <div class="statement">
+          <p>Figure 1 shows the overall crime count trend (excluding Drugs and Anti-Social Behaviour) from January 2020 to May 2021, with crime count trends from previous years as comparison. As illustrated in Figure 1, 2020 goes through a relatively huge crime dip in April compared to the crime trend on the same month previous years. This is due to the UK lockdown that went into effect on March 23rd, resulting in the first full month of lockdown occuring in April 2020. Then as the lockdown restrictions were relaxed from May 2020 to August 2020, crime started to go back up until it was reached a point in August 2020 that was similar to crime counts in August from previous years.<br><br>Throughtout the month of September 2020, lockdown restrictions were put in place for some local areas due to the resurgence in covid cases. This led to a second steady decline in crime for the whole of September. Crime continued to go down in October 2020, albeit not as drastically as the previous month. However, the second "firebreak" lockdown was put into effect from October 23rd to November 9th and a subsequent third lockdown on December 26th, which led to adecline in crime from November 2020 to February 2020, which was as steep as the crime dip that occured from March 2020 to April 2020. <br><br>Finally, lockdown restrictions started getting relaxed starting from early March 2021 till May 2021, resulting in crime climbing back to pre-pandemic crime levels from March 2021 to May 2021. This is the macro-level crime trend which will be broken down in the following sections in order to analyze the contributions of different crime types and local areas to this trend.</p>
+        </div>
+      </div>     
+    </div>
+
+    <!-- Impact on different crime types Container -->
+    <div id="impactOnDiffCrimeTypesContainer">
+      <div id="impactOnDiffCrimeTypes">
+        <div class="subHeading">
+          <h2>Impact on different types of crime</h2>
+        </div>
+        <div class="plotGallery">
+            <div class="plotDetails">
+                <img src="resources/gallery/diff_crimetype_ggplot.jpg">
+                <p><i>Figure 2: Time series plot of different types of crime in Wales</i></p>
+            </div>
+        </div>
+        
+        <div class="statement">
+            <p>Figure 2 shows the crime count trend of different types of crime from January 2020 to May 2021, with crime count trends of different crime types from previous years as comparison. From the figure above, it can be observed that Violence/sexual offences, burglary, theft from the person, other theft and shoplifting were the crime types whose 2020 trends aligned the most with the overall crime trend in Figure 1, leading to the conclusion that overall crime in Wales consisted mainly of these crime types. </p>
+        </div>
+        <div class="plotGallery">
+            <div class="plotDetails">
+                <img src="resources/gallery/diff_crimetype_gini_ggplot.jpg">
+                <p><i>Figure 3: Time series plot of the Gini Coefficients of different types of crime in Wales</i></p> 
+            </div>
+        </div>
+        <div class="statement">
+            <p>Figure 3 shows the gini coefficients (statistical measure of the degree of variation or inequality that goes from 0 to 1; the closer to 1 that the gini coefficient is, the more unevenly distributed that crime is across Wales) of the different crime types and for the same time period in Figure 2. From Figure 3, it can be observed that gini coefficients of Violence/sexual offences, Burglary, theft from the person, criminal damage/arson and shoplifting are as follows:</p>
+            <ul>
+                <li>Violence/sexual offences: ~0.375</li>
+                <li>Burglary: ~0.5</li>
+                <li>Theft from the person: ~0.5 to ~0.8</li>
+                <li>Other theft: ~0.5</li>
+                <li>Shoplifting: ~0.75</li>
+                <li>Criminal damage/arson: ~0.5</li>
+                
+            </ul>
+            <p>The gini coeffients above suggest that different crime types have varying degrees of distribution across Wales, i.e. among the 6 crimes listed above, Violence/sexual offences was the most evenly distributed, Theft from the person and shoplifting were the least distributed, while burglary, criminal damage/arson and other theft were somewhere in the middle with some degree of unequal distribution across Wales. In the following section, crime per MSOA region will be further analyzed.</p>
+        </div>
+      </div>     
+    </div>
+    
+    <!-- Breakdown of crime per MSOA cluster Container -->
+    <div id="crimePerMSOAclusterContainer">
+        <div class="subHeading">
+            <h2>Breakdown of crime per MSOA cluster</h2>
+        </div>     
+        <div class="plotDetails">
+            <img src="resources/gallery/kmeans_violin_full_gg.png">
+            <p><i>Figure 4: K-longitudinal cluster plot of crime per MSOA cluster</i></p>
+        </div>
+        <div class="statement">
+            <p>Figure 4 is a k-longitudinal cluster plot containing 6 clusters of all MSOA regions in Wales. Each cluster consists of MSOA regions with a similar level of crime and illustrates the contribution of each MSOA cluster to the overall crime trend. The solid lines represent the mean crime count for each cluster at any given point in time from January 2020 to May 2021. The violin shapes represent the variation around the mean crime count for each month.<br><br>The cluster plot shows that the crime level was relatively low and stable for most MSOA regions, which happened to be in clusters A and B (77.8% of MSOA regions in Wales). Clusters C and D had levels that were relatively mid-level in terms of stability and crime counts (20% of MSOA regions in Wales). However, the stability and crime counts in clusters E and F were the highest by far, with only 1.2% of MSOA regions not only contributing the most number of crimes to the overall crime trend, but also aligning the most with the overall crime trend in terms of declines and increases from January 2020 to May 2021. The next section further breaks down the contribution of each cluster by month from January 2020 to May 2021.</p>
+        </div>
+      
+        <div class="plotDetails">
+            <img src="resources/gallery/change_ggplot.png">
+            <p><i>Figure 5: Bar plot of Monthly crime count change per MSOA cluster</i></p>
+        </div>
+        <div class="statement">
+            <p>Figure 5 is a bar plot that shows the monthly change of crime count and percentage of total positive or negative change for each cluster from January 2020 to May 2021.<br><br>As illustrated by the overall crime trend in Figure 1, crimes from all clusters experienced a relatively steep decline from March 2020 to April 2020. That being said, the MSOA regions from clusters E and F contributed the most to the crime drop, i.e. 43% of the total crime drop, despite comprising of only 1.2% of all MSOA regions in Wales. In contrast, clusters A and B contributed only 34% to the total crime drop, despite making up 77.8% of all MSOA regions in Wales. This is in line with the cluster analysis that shows that overall crime in Wales was largely driven by a small number of areas that belong to clusters E and F.<br><br>As crime started to climb back up from April 2020 to May 2020, the contributions of clusters A and B increased (59% from April 2020 to May 2020), albeit by an amount that is still relatively small considering that clusters A and B contain most of Wales. On the other hand, the contributions of clusters E and F from April 2020 to May 2020 reduced to 3% in total, which is as a result of increase in overall crime during this time period being less steep compared to the decline from March 2020 to April 2020.<br><br>From May 2020 to July 2020, clusters A and B contributions reduced a little (42% from May to June and 31% from June to July), while clusters E and F contributions increased a lot (24% from May to June and 35% from June to July), due to the increase in overall crime being more steep compared to the previous time period from May to June. A similar trend continued from July 2020 to May 2021, i.e. clusters E and F contributed a disproportionately large amount to the overall crime increase or decrease, compared to other clusters. A breakdown of overall crime into different crime types per cluster for every month in 2020 is in the following section.</p>
+        </div>
+       
+        <div class="plotDetails">
+            <img src="resources/gallery/traj_crimes_monthly_k6_gg.png">
+            <p><i>Figure 6: Bar plot of monthly contributions of each crime type to overall crime</i></p>
+        </div>
+        <div class="statement">
+            <p>Figure 6 shows the monthly contributions of each crime type to overall crime. From the figure above, it can be observed that the crime types in clusters A to D (areas with low to mid crime levels) have relatively stable proportions from January 2020 to December 2020, with Violence/sexual offences contributing the most to overall monthly crime, followed by Public order, criminal damage/arson, burglary and finally other theft.<br><br>However, the crime types in clusters E and F (areas with high crime levels) have relatively unstable proportions, with the proportions of Violence/sexual offences in clusters E and F being less than those in other clusters. On the other hand, the proportions of shoplifting, public order, theft from the person, bicycle theft, other theft, and criminal damage/arson increased in that order, compared to those in the low to mid crime clusters, with bicycle theft contributing a larger proportion to cluster F. This suggests that a large change in crime opportunities occurred in a handful of local areas located in clusters E and F. The section below explores the relationship between crime and structres that serve as crime opportunity areas.</p>
+        </div>
+    </div>
+      
+        
+    
+      
+      <!-- Correlation between crime and structures Container -->
+    <div id="corrBtwCrimeAndStructuresContainer">
+      <div class="subHeading">
+        <h2>Correlation between crime and structures</h2>
+      </div>         
+      <div class="plotDetails">
+        <img src="resources/gallery/osm_cluster_spearmann_plot.png">
+        <p><i>Figure 7: Spearman's rank correlation plot between mean overall crime count and the number of structures in each MSOA cluster, where x = number of clusters with 1 as cluster A, 2 as cluster B, 3 as cluster C, 4 as cluster D, 5 as cluster E and 6 as cluster F, and y = the mean crime count per cluster</i></p>
+      </div>
+      <div class="statement">
+            <p>Figure 7 is a spearman rank correlation plot that illustrates the correlation between the mean overall crime count and the number of structures in each MSOA cluster. A spearman rank correlation is a non-parametric test that is used to calculate the level of association between two variables. The spearman rank correlation coefficient is between -1 and 1. A coefficient of -1 or values close to -1 indicates that a strong negative correlation between x and y ( as x increasess, y decreases). Conversely, a coefficient of 1 or values close to 1 indicates that a strong positive correlation between x and y (as x increases, y increases).<br><br>Figure 7 shows that the spearman rank correlation coefficient is 0.943, meaning that the mean crime count of a region is strongly related to the number of structures in the area (i.e. nightclubs, convenience stores, pubs, car park, bicycle parks, malls and other crime opportunityy structures). The plot also shows that cluster E and F had the highest mean crime count out of all the clusters, which explains why the MSOA regions in these clusters contributed more to crime than teh regions in other clusters.<br><br>Based on all the analysis done, it can be concluded that the covid lockdowns resulted in a small handful of regions driving most of overall crime trend in Wales due to the fact that there is a much higher number of crime opportunity structures in these local areas than in any other part of Wales. </p>
+        </div>
+    </div>
+
+
+   </div> 
+  </body>
+</html>

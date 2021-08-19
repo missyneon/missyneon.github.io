@@ -1,0 +1,94 @@
+html {
+    font-size: 16px;
+    font-family: 'Lexend Mega', sans-serif;
+}
+
+#header {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 3rem;
+    position: relative;
+}
+
+body {
+    position: relative;
+}
+#myBody {   
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0%;
+}
+
+#myBody::before {
+    background-image: url('images/walesOutlineBackground.jpg');
+    background-repeat:  no-repeat;
+    background-position: center;
+    position: absolute;
+    background-attachment: fixed;
+    background-color: #030303;
+    background-size: cover;
+    opacity: 0.6;
+    content: "";
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    
+}
+
+
+#navbar {
+    display: inline-flex;
+    justify-content: space-around;
+    flex-grow: 2;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+  color: darkviolet;
+}
+
+i{
+    font-size: 80%;
+}
+
+
+#impactOnOverallCrimeContainer,#impactOnDiffCrimeTypesContainer, #crimePerMSOAclusterContainer, #corrBtwCrimeAndStructuresContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+}
+
+
+.plotGallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    
+}
+
+.plotItem {
+    text-align: center;
+}
+
+
+p {
+    padding: 5px;
+    min-width: 240px;
+ /*   text-align: center;*/   
+}
+
+.statement {
+    text-align: left;
+}
