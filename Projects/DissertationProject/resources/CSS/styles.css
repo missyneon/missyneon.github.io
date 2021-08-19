@@ -23,7 +23,7 @@ body {
 
 #myBody::before {
     background-image: url('images/walesOutlineBackground.jpg');
-    background-repeat:  repeat;
+    background-repeat:  no-repeat;
     background-position: center;
     position: absolute;
     background-attachment: fixed;
@@ -97,8 +97,11 @@ p {
     li{
         display: block;
     }
-    body,#myBody {
+    body {
         background-size: 100%;
+    }
+    #mybody {
+        background-size: 150%;
     }
 
     header h1 {
