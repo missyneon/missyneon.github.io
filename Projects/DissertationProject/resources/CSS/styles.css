@@ -14,16 +14,16 @@ html {
 body {
     position: relative;
 }
-/*#myBody {   
+#myBody {   
     padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     margin-bottom: 0%;
-}*/
+}
 
 #myBody::before {
     background-image: url('images/walesOutlineBackground.jpg');
-    background-repeat:  no-repeat;
+    background-repeat:  repeat;
     background-position: center;
     position: absolute;
     background-attachment: fixed;
