@@ -99,10 +99,9 @@ p {
     }
     body {
         background-size: 100%;
+        background-color:#030303;
     }
-    #mybody {
-        background-size: 150%;
-    }
+    
 
     header h1 {
         width: 50%;
