@@ -1,8 +1,11 @@
 html {
     font-size: 16px;
-    font-family: 'Lexend Mega', sans-serif;
-    height: 100%;
-    width: 100%;
+    font-family: 'Lexend Mega', sans-serif;    
+    display: flex;
+/*
+    height: 100vh;
+    width: 100vw;
+*/
 }
 
 #header {
@@ -15,12 +18,14 @@ html {
 
 body {
     position: relative;
+   
 }
 #myBody {   
     padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     margin-bottom: 0%;
+   
 }
 
 #myBody::before {
@@ -94,21 +99,16 @@ p {
     text-align: left;
 }
 
+
 /*
 @media only screen and (max-width:960px) {
-    li{
-        display: block;
-    }
-    body  {
-        background-size: 100%;
-    }
+   
     #myBody  {
-        height:100%;
-        width: 100%;
+        height:100vh;
+        width: 100vw;
     }
     
 
-    header h1 {
-        width: 50%;
-    }
-}*/ 
+    
+} 
+*/
