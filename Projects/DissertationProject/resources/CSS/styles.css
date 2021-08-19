@@ -98,10 +98,12 @@ p {
     li{
         display: block;
     }
-    body {
+    body,#myBody  {
         background-size: 100%;
     }
-    
+    #myBody  {
+        height:100vh;
+    }
     
 
     header h1 {
