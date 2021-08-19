@@ -98,11 +98,12 @@ p {
     li{
         display: block;
     }
-    body,#myBody  {
+    body  {
         background-size: 100%;
     }
     #myBody  {
-        height:100vh;
+        height:100%;
+        width: 100%;
     }
     
 
