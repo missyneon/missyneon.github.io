@@ -1,0 +1,637 @@
+library(kml) # package to implement k-means cluster for longitudinal data
+library(ggplot2) # package for creating plots and other types of graphics
+library(cowplot) # package that is an add-on to ggplot that provides themes, annotations and other features to plots
+library(lorenzgini) # package to calculate the gini coefficient and plots lorenz curves
+# library(spdep) # package t create matrix objects for spatial data analysis
+library(readr) # package to read and parse rectangular data such as 'csv', 'tsv' and 'fwf'
+library(janitor) # package with functions for examining and cleaning dirty data
+library(dplyr) # package for data manipulation
+library(tidyr) # package to tidy messy data, i.e. pivoting, nesting/unnesting, rectangling and extracting values out of string columns
+library(purrr) # package with functions that enhances R's functional programming
+library(stringr) # package with functions to work more easily with strings
+library(forcats) # package with functions to solve common problems with factors
+library(sf) # package that provides support for simple features i.e. reading/writing data, geometrical operations, projection conversions and data transformations
+library(factoextra) # package with functions for extracting and visualizing output of multivariate data analyses i.e. PCA, CA, MCAFAMD, MFA and HMFA functions from different R packages
+library(fifer) #spearman rank package
+
+# read 2020 and 2021 csv files into dataframes
+data_2021 <- read_csv("C:/Users/steph/Desktop/CIS/MScProject/data/data/2021_wales_crime_msoa.csv")
+data_2020 <- read_csv("C:/Users/steph/Desktop/CIS/MScProject/data/data/2020_wales_crime_msoa.csv")
+
+
+# Bind rows from each year into a data frame for every year, then create year ID. 
+# bind_rows(): dplyr function that combines rows from 1 or more dataframes or objects of other kind, like the list object in this instance
+# clean_names(): janitor function that cleans variable names
+# mutate(): dplyr function that creates a new variable from a dataset
+
+data_2021 <- data_2021 %>% 
+  clean_names() %>% 
+  mutate(year = "2021")
+
+data_2020 <- data_2020 %>%  
+  clean_names() %>% 
+  mutate(year = "2020")
+
+
+# read 2019 and 2018 csv files into dataframes
+data_2019 <- read_csv("C:/Users/steph/Desktop/CIS/MScProject/data/data/2019_wales_crime_msoa.csv")
+data_2018 <- read_csv("C:/Users/steph/Desktop/CIS/MScProject/data/data/2018_wales_crime_msoa.csv")
+
+# Bind into data frames keeping the years separate.
+data_2019 <- data_2019 %>% 
+  clean_names() %>% 
+  mutate(year = "2019")
+
+data_2018 <- data_2018 %>% 
+  clean_names() %>% 
+  mutate(year = "2018")
+
+# dplyr function filter() to remove data 
+
+
+# Check distinct number of months.
+# unique(data_2021$month)
+# unique(data_2020$month)
+# unique(data_2019$month)
+# unique(data_2018$month)
+
+# Check distinct number of crime types.
+# unique(data_2021$crime_type)
+# unique(data_2020$crime_type)
+# unique(data_2019$crime_type)
+# unique(data_2018$crime_type)
+
+# base function to check for missing/NA/NULL values
+sum(is.na(data_2021$month))
+sum(is.na(data_2020$month))
+sum(is.na(data_2019$month))
+sum(is.na(data_2018$month))
+
+sum(is.na(data_2021$crime_type))
+sum(is.na(data_2020$crime_type))
+sum(is.na(data_2019$crime_type))
+sum(is.na(data_2018$crime_type))
+
+sum(is.na(data_2021$msoa)) # 0 
+sum(is.na(data_2020$msoa)) # 0 
+sum(is.na(data_2019$msoa)) # 0
+sum(is.na(data_2018$msoa)) # 0 
+
+
+# Aggregate by month (N = 12), crime type (N = 14), and MSOA (N = 1909). 
+# dplyr function: group_by() groups dataframe into groups by multiple columns
+# dplyr function: summarize() collapse each group into a single-row summary by applying a summary/aggregate function to each group, where n() is the summary function used to find the count for each group.
+# dplyr function: ungroup() drops any grouping to return to a non-grouped form because complete() function needs an ungrouped dataframe
+# dplyr function: complete() completes/replaces dataframes with missing combinations of data with data of your choice
+
+data_agg_2021 <- data_2021 %>% 
+  group_by(crime_type, month, msoa, year) %>% 
+  summarise(crime_count = n()) %>% 
+  ungroup() %>% 
+  complete(crime_type, month, msoa, year, fill = list(crime_count = 0))
+
+# Remove redundant data objects to free up memory
+rm(data_2021) 
+
+data_agg_2020 <- data_2020 %>% 
+  group_by(crime_type, month, msoa, year) %>% 
+  summarise(crime_count = n()) %>% 
+  ungroup() %>% 
+  complete(crime_type, month, msoa, year, fill = list(crime_count = 0))
+
+# Remove redundant data objects to free up memory
+rm(data_2020) 
+
+data_agg_2019 <- data_2019 %>% 
+  group_by(crime_type, month, msoa, year) %>% 
+  summarise(crime_count = n()) %>% 
+  ungroup() %>% 
+  complete(crime_type, month, msoa, year, fill = list(crime_count = 0))
+
+# Remove redundant data objects to free up memory
+rm(data_2019) 
+
+data_agg_2018 <- data_2018 %>% 
+  group_by(crime_type, month, msoa, year) %>% 
+  summarise(crime_count = n()) %>% 
+  ungroup() %>% 
+  complete(crime_type, month, msoa, year, fill = list(crime_count = 0))
+
+# Remove redundant data objects to free up memory
+rm(data_2018) 
+
+# Check number of each MSOAs appearing in each year. There are all the same: 410
+length(unique(data_agg_2021$msoa))
+length(unique(data_agg_2020$msoa))
+length(unique(data_agg_2019$msoa))
+length(unique(data_agg_2018$msoa))
+
+
+# Combine 2018, 2019, 2020, and 2021 datasets for next steps.
+data_agg_df <- bind_rows(data_agg_2018, data_agg_2019, data_agg_2020, data_agg_2021)
+
+data_agg_df <- data_agg_df %>%
+  filter(crime_type != "Anti-social behaviour" & crime_type != "Drugs")
+
+# Remove objects to free up memory if needed.
+rm(data_agg_2018, data_agg_2019, data_agg_2020, data_agg_2021)
+
+######### Create raw counts plot, comparing trends across years.#########
+# Records also include anti-social behavior (ASB) which usually captures less 
+# serious offences such as nuisance behavior and is not a notifiable offence.
+# The decision to exclude drug offences follows recognition that drug crime trends, 
+# particularly during the COVID-19 lockdown, largely reflect policing 
+# proactivity rather than meaningful shifts in criminal behavior (Langton, 2020).
+# First, create a small, identical data frame with total notifiable offences, except drugs and ASB as a 'crime type'.
+# select(): dplyr function to select a subset of data 
+# separate(): dplyr function to separate a single column into multiple columns
+
+overall_crime_agg_df <- data_agg_df %>%
+  separate(month, into = c("year", "month"), sep = "-") %>%
+  group_by(year, month) %>% 
+  summarise(total_crime_count = sum(crime_count))  
+  
+   
+
+# Single plot for notifiable offences.
+# ggplot function to plot graphics. You provide the data, tell 'ggplot2' how to map variables to aesthetics, what graphical primitives to use, and it takes care of the details. start with ggplot(), supply a dataset and aesthetic mapping (with aes()). You then add on layers (like geom_point() or geom_histogram()), scales (like scale_colour_brewer()), faceting specifications (like facet_wrap()) and coordinate systems (like coord_flip()).
+# geom_line:  connects data in order of the variable on the x axis
+# scale_x_discrete() and scale_y_discrete() are used to set the values for discrete x and y scale aesthetics. 
+# labs() and lims() are used for simple manipulation of scale labels and limits
+# scale_color_manual() allows you to specify your own set of mappings from levels in the data to aesthetic values
+# theme_bw: A theme with white background and black gridlines.
+# theme(): powerful way to customize the non-data components of your plots: i.e. titles, labels, fonts, background, gridlines, and legends. Themes can be used to give plots a consistent customized look
+
+overall_crime_ggplot <- ggplot(data = overall_crime_agg_df) +
+  geom_line(mapping = aes(x = month, y = total_crime_count, group = year, colour = year), size = 0.75) +
+  geom_vline(xintercept = 3.74, linetype = "dotted") +
+  geom_vline(xintercept = 10.74, linetype = "dotted") +
+  scale_x_discrete(labels = str_extract(month.name[1:12], "^.{3}")) +
+  scale_color_manual(values = rev(c("red", "blue", "orange","green"))) +
+  labs(x = "month", y = "Overall crime count", colour = NULL) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 8), 
+        axis.ticks = element_line(size = 0.2),
+        axis.text.y = element_text(size = 8),
+        legend.position = "right") +
+  annotate(geom = "text", x = 2.5, y = 22000, size = 3, label = "First UK COVID lockdown\n that occurred on March 23rd, 2020") +
+  annotate(geom = "curve", x = 3.15, xend = 3.65, y = 22500, yend = 23000, curvature = -0.1, arrow = arrow(length = unit(1, "mm"))) +
+annotate(geom = "text", x = 9.5, y = 22000, size = 3, label = "Second firebreak lockdown\n that occurred on October 23rd, 2020") +
+  annotate(geom = "curve", x = 10.15, xend = 10.65, y = 22500, yend = 23000, curvature = -0.1, arrow = arrow(length = unit(1, "mm")))
+plot(overall_crime_ggplot)
+
+# Save.
+ggsave(plot = overall_crime_ggplot , filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/overall_crime_ggplot.jpg", width = 15, height = 8, unit = "cm")
+
+
+# Then calculate these counts by crime type, bind the total crime data frame to it, and visualise.
+# recode_factor(): dplyr function to replace values of a factor variable. recode() does the same for regular variables 
+# geom_vline(): ggplot2 function to annotates plot with vertical lines
+# facet_wrap(): ggplot2 function to wrap a 1-panel plot into multiple panels per plot
+
+diff_crimetype_agg_df <- data_agg_df %>%
+  separate(month, into = c("year", "month"), sep = "-") %>%
+  group_by(crime_type, year, month) %>% 
+  summarise(total_crime_count = sum(crime_count)) %>% 
+  ungroup() 
+
+
+diff_crimetype_ggplot <- ggplot(data = diff_crimetype_agg_df) +
+  geom_line(mapping = aes(x = month, y = total_crime_count, group = year, colour = year), size = 0.5) +
+  geom_vline(xintercept = 3.74, linetype = "dotted") +
+  geom_vline(xintercept = 10.74, linetype = "dotted") +
+  facet_wrap(~ crime_type, ncol = 3, scales = "free_y") +
+  scale_x_discrete(labels = str_extract(month.name[1:12], "^.{3}")) +
+  scale_color_manual(values = rev(c("red", "blue", "orange", "green"))) +
+  labs(x = "Month", y = "Different crime types", colour = NULL) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 4), 
+        axis.ticks = element_line(size = 0.3),
+        axis.text.y = element_text(size = 6),
+        strip.text = element_text(size = 8),
+        strip.background = element_rect(fill = "transparent"),
+        legend.position = "right")
+plot(diff_crimetype_ggplot)
+
+# Save.
+ggsave(plot = diff_crimetype_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/diff_crimetype_ggplot.jpg", width = 16, height = 20, units = "cm", dpi = 600)
+
+# Calculate Wales Generalized Gini coefficient plot for notifiable crimes except drugs/ASB to determine the level of variation
+overall_gini_df <- data_agg_df %>%
+  separate(month, into = c("year","month"), sep = "-") %>%
+  group_by(year, month) %>% 
+  summarise(gini_coef = gini(crime_count, generalized = TRUE, unbiased = TRUE)) %>% 
+  ungroup() %>%  
+  mutate(crime_type = "Notifiable offences (excl. drugs)") 
+  
+ 
+# Single plot for overall notifiable crime except drugs/ASB.
+overall_gini_ggplot <- ggplot(data = overall_gini_df) +
+  geom_line(mapping = aes(x = month, y = gini_coef, group = year, colour = year), size = 0.8) +
+  geom_vline(xintercept = 3.74, linetype = "dotted") +
+  geom_vline(xintercept = 10.74, linetype = "dotted") +
+  ylim(0, 1) +
+  labs(x = "Month", y = "Generalized Gini Coefficient", colour = NULL) +
+  scale_x_discrete(labels = str_extract(month.name[1:12], "^.{3}")) +
+  scale_color_manual(values = rev(c("red", "blue", "orange","green"))) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 8), 
+        axis.ticks = element_line(size = 0.3),
+        axis.text.y = element_text(size = 6),
+        legend.position = "right")
+plot(overall_gini_ggplot)
+
+# Save.
+ggsave(plot = overall_gini_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/overall_gini_ggplot.jpg", width = 12, height = 8, unit = "cm")
+
+# Do the same but by crime type.
+diff_crimetype_gini_df <- data_agg_df %>%
+  separate(month, into = c("year","month"), sep = "-") %>%
+  group_by(crime_type,year, month) %>% 
+  summarise(gini_coef = gini(crime_count, generalized = TRUE, unbiased = TRUE)) %>% 
+  ungroup()
+  
+
+# Multi-panel gini plot using facet_wrap().
+diff_crimetype_gini_ggplot <- ggplot(data = diff_crimetype_gini_df) +
+  geom_line(mapping = aes(x = month, y = gini_coef, group = year, colour = year), size = 0.8) +
+  geom_vline(xintercept = 3.74, linetype = "dotted") +
+  geom_vline(xintercept = 10.74, linetype = "dotted") +
+  facet_wrap(~ crime_type, ncol = 3) +
+  ylim(0, 1) +
+  labs(x = "Month", y = "Generalized Gini Coefficient", colour = NULL) +
+  scale_x_discrete(labels = str_extract(month.name[1:12], "^.{3}")) +
+  scale_color_manual(values = rev(c("red", "blue", "orange","green"))) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 6),
+        axis.ticks = element_line(size = 0.3),
+        axis.text.y = element_text(size = 6),
+        strip.text = element_text(size = 8),
+        strip.background = element_rect(fill = "transparent"),
+        legend.position = "right")
+plot(diff_crimetype_gini_ggplot)
+
+# Save.
+ggsave(plot = diff_crimetype_gini_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/diff_crimetype_gini_ggplot.jpg", width = 14, height = 20, units = "cm", dpi = 600)
+
+
+# Remove objects to free up memory if needed.
+rm(diff_crimetype_gini_ggplot, diff_crimetype_gini_df, overall_gini_ggplot, overall_gini_df, overall_crime_ggplot, overall_crime_agg_df,diff_crimetype_ggplot, diff_crimetype_agg_df)
+
+# Prepare the data for the longitudinal k-means
+
+# Subset for the study period (Jan to Dec) and aggregate crime counts across 
+# categories, excluding ASB and drugs.
+
+kmeans_df <- data_agg_df %>% 
+  group_by(msoa, month) %>% 
+  summarise(total_crime_count = sum(crime_count)) %>% 
+  ungroup() 
+
+# recode the month names to pivot wide for kml package.
+kmeans_clean_df <- kmeans_df %>% 
+  pivot_wider(id_cols = msoa, names_from = "month", values_from = "total_crime_count")
+  
+
+# Check that we've retained all MSOA for final analysis (N = 410).
+length(unique(kmeans_df$msoa))
+length(unique(kmeans_clean_df$msoa))
+
+# Perform kmeans analysis on the Jan 2020 to Dec 2020 counts.
+
+# Set seed.
+set.seed(1612) 
+
+# Convert to matrix, cluster data, and perform kmeans on all 6 clusters as 6 is optimal for kml clustering.
+kml_mat <- as.matrix(kmeans_clean_df[27:42])
+kml_traj    <- clusterLongData(traj = kml_mat) 
+kml(kml_traj, nbClusters = 6, toPlot = "none", nbRedrawing = 20)
+
+
+# retrieve cluster details in data frame format
+# join MSOA data with the cluster details
+clusters_df <- cbind.data.frame(msoa = kmeans_clean_df$msoa, traj = getClusters(kml_traj, 6, 20))
+kmeans_clusters_df <- inner_join(kmeans_clean_df, clusters_df) 
+
+
+# Analysis of selected clusters (6) #
+
+# Combine MSOA codes and cluster labels into a data frame.
+
+# Compute cluster sizes for Violin plot cluster labels.
+as.data.frame(table(kmeans_clusters_df$traj)) %>% 
+  mutate(total = sum(Freq),
+         pct  = 100*Freq/total)
+
+# Create new label for each cluster. Convert to tibble along the way. There are two main differences in the usage of a data frame vs a tibble: printing, and subsetting, makes it much easier to work with large data.
+# as_tibble(): dplyr function that turns an R object into a tibble/ dataframe of class tbl_df
+# fct_relevel(): forcats function that allows you to order or move any number of levels to any location.
+
+kmeans_clusters_df <- kmeans_clusters_df %>% 
+  as_tibble() %>% 
+  mutate(traj_titles  = case_when(traj == "A" ~ "[A] N = 123 (30.0%)",
+        			  traj == "B" ~ "[B] N = 119 (29.0%)",
+                                  traj == "C" ~ "[C] N = 77 (18.8%)",
+                                  traj == "D" ~ "[D] N = 59 (14.4%)",
+                                  traj == "E" ~ "[E] N = 27 (6.6%)",
+                                  traj == "F" ~ "[F] N = 5 (1.22%)"
+       	      ),traj_titles  = fct_relevel(traj_titles, "[A] N = 123 (30.0%)",
+                                                 "[B] N = 119 (29.0%)",
+                                                 "[C] N = 77 (18.8%)",
+                                                 "[D] N = 59 (14.4%)",
+                                                 "[E] N = 27 (6.6%)",
+                                                 "[F] N = 5 (1.22%)"))
+
+# Join cluster information back with main data frame.
+data_agg_cluster_df <- inner_join(data_agg_df, kmeans_clusters_df)
+
+# Remove the kmeans data frame to save space if needed.
+rm(kmeans_clean_df, kmeans_df)
+
+# Subset data for the study period Jan to Dec across all years, and aggregate to all crime excluding drugs and ASB for each cluster identified by kmeans. 
+
+clusters_agg_df <- data_agg_cluster_df %>%
+  group_by(msoa, month, year, traj, traj_titles) %>% 
+  summarise(total_crime_count = sum(crime_count)) %>% 
+  ungroup() %>%
+  mutate(month_name = case_when(
+	str_detect(month, pattern="-01") == TRUE ~ "January",
+        str_detect(month, pattern="-02") == TRUE ~ "February",
+        str_detect(month, pattern="-03") == TRUE ~ "March",
+        str_detect(month, pattern="-04") == TRUE ~ "April",
+        str_detect(month, pattern="-05") == TRUE ~ "May",
+        str_detect(month, pattern="-06") == TRUE ~ "June",
+        str_detect(month, pattern="-07") == TRUE ~ "July",
+        str_detect(month, pattern="-08") == TRUE ~ "August",
+        str_detect(month, pattern="-09") == TRUE ~ "September",
+        str_detect(month, pattern="-10") == TRUE ~ "October",
+        str_detect(month, pattern="-11") == TRUE ~ "November",
+        str_detect(month, pattern="-12") == TRUE ~ "December"
+	), month_name = fct_relevel(month_name, month.name[1:12]))
+
+   
+
+# Violin plot. Filter for years as we go.
+# geom_violin(): ggplot2 function that produces a violin plot is a compact display of a continuous distribution
+# stat_summary(): tidyr function that allows for tremendous flexibilty in the specification of summary functions.
+
+kmeans_clusters_ggplot <- ggplot() + theme_bw() +
+  geom_violin(data = clusters_agg_df,
+              mapping = aes(x = month_name, y = total_crime_count, fill = traj_titles),
+              alpha = 0.3, colour = "transparent", adjust = 2) + 
+  scale_fill_hue(guide = "none") +
+  stat_summary(data = filter(clusters_agg_df, year == "2018"),
+               mapping = aes(x = month_name, y = total_crime_count, group = traj_titles, colour = year),
+               fun = "mean", linetype = "solid", size = 0.8, geom = "line") +
+  stat_summary(data = filter(clusters_agg_df, year == "2019"),
+               mapping = aes(x = month_name, y = total_crime_count, group = traj_titles, colour = year),
+               fun = "mean", linetype = "solid", size = 0.8, geom = "line") +
+  stat_summary(data = filter(clusters_agg_df, year == "2020"),
+		mapping = aes(x = month_name, y = total_crime_count, group = traj_titles, colour = year),
+              fun = "mean", linetype = "solid", size = 0.8, geom = "line") +
+  stat_summary(data = filter(clusters_agg_df, year == "2021"),
+               mapping = aes(x = month_name, y = total_crime_count, group = traj_titles, colour = year),
+               fun = "mean", linetype = "solid", size = 0.8, geom = "line") +
+  scale_colour_manual(values = c("red", "blue", "orange","green"), labels = c("2018", "2019", "2020","2021")) +
+  facet_wrap(~traj_titles, ncol = 2) +
+  scale_x_discrete(labels = c(str_extract(month.name[1:12], "^.{3}"), character(1))) +
+  labs(x = "Month", colour = NULL, y = "crime count") +
+  guides(colour = guide_legend(nrow = 1)) +
+  theme(legend.position = "bottom",
+        strip.text = element_text(size = 8),
+        strip.background = element_rect(fill = "transparent"))
+plot(kmeans_clusters_ggplot)
+
+# Save full plot.
+ggsave(plot = kmeans_clusters_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/kmeans_clusters_ggplot.jpg",
+       height = 24, width = 20, unit = "cm", dpi = 200)
+
+########################################################################################
+
+# Calculate the absolute % of month-on-month change each cluster contributed to. This is a bit fiddly and could be improved in terms of code.
+
+change_df <- clusters_agg_df %>% 
+  filter(year == "2020" | year == "2021") %>% 
+  dplyr::select(msoa, month, traj_titles, total_crime_count) %>% 
+  group_by(month, traj_titles) %>%
+  summarise(traj_crimes = sum(total_crime_count)) %>%
+  ungroup() %>%
+  group_by(month) %>%  
+  mutate(total_traj_crimes = sum(traj_crimes)) %>%
+  pivot_wider(id_cols = traj_titles, names_from = month, values_from = c(traj_crimes, total_traj_crimes)) %>% clean_names() %>%
+  mutate(traj_2020_01_2020_02 = traj_crimes_2020_02-traj_crimes_2020_01,
+	 traj_2020_02_2020_03 = traj_crimes_2020_03-traj_crimes_2020_02,
+         traj_2020_03_2020_04 = traj_crimes_2020_04-traj_crimes_2020_03,
+         traj_2020_04_2020_05 = traj_crimes_2020_05-traj_crimes_2020_04,
+         traj_2020_05_2020_06 = traj_crimes_2020_06-traj_crimes_2020_05,
+         traj_2020_06_2020_07 = traj_crimes_2020_07-traj_crimes_2020_06,
+         traj_2020_07_2020_08 = traj_crimes_2020_08-traj_crimes_2020_07,
+         traj_2020_08_2020_09 = traj_crimes_2020_09-traj_crimes_2020_08,
+         traj_2020_09_2020_10 = traj_crimes_2020_10-traj_crimes_2020_09,
+         traj_2020_10_2020_11 = traj_crimes_2020_11-traj_crimes_2020_10,
+         traj_2020_11_2020_12 = traj_crimes_2020_12-traj_crimes_2020_11,
+         traj_2020_12_2021_01 = traj_crimes_2021_01-traj_crimes_2020_12,
+	 traj_2021_01_2021_02 = traj_crimes_2021_02-traj_crimes_2021_01,
+	 traj_2021_02_2021_03 = traj_crimes_2021_03-traj_crimes_2021_02,
+         traj_2021_03_2021_04 = traj_crimes_2021_04-traj_crimes_2021_03,
+         traj_2021_04_2021_05 = traj_crimes_2021_05-traj_crimes_2021_04,
+
+         tot_2020_01_2020_02  = sum(abs(traj_2020_01_2020_02)),
+	 tot_2020_02_2020_03  = sum(abs(traj_2020_02_2020_03)), 
+         tot_2020_03_2020_04  = sum(abs(traj_2020_03_2020_04)),
+         tot_2020_04_2020_05  = sum(abs(traj_2020_04_2020_05)), 
+         tot_2020_05_2020_06  = sum(abs(traj_2020_05_2020_06)),
+         tot_2020_06_2020_07  = sum(abs(traj_2020_06_2020_07)),
+         tot_2020_07_2020_08  = sum(abs(traj_2020_07_2020_08)),
+         tot_2020_08_2020_09  = sum(abs(traj_2020_08_2020_09)),
+         tot_2020_09_2020_10  = sum(abs(traj_2020_09_2020_10)),
+         tot_2020_10_2020_11  = sum(abs(traj_2020_10_2020_11)),
+         tot_2020_11_2020_12  = sum(abs(traj_2020_11_2020_12)),
+         tot_2020_12_2021_01  = sum(abs(traj_2020_12_2021_01)),
+	 tot_2021_01_2021_02  = sum(abs(traj_2021_01_2021_02)),
+	 tot_2021_02_2021_03  = sum(abs(traj_2021_02_2021_03)), 
+         tot_2021_03_2021_04  = sum(abs(traj_2021_03_2021_04)),
+         tot_2021_04_2021_05  = sum(abs(traj_2021_04_2021_05)),
+
+	 pct_2020_01_2020_02  = 100*round(traj_2020_01_2020_02/tot_2020_01_2020_02, 2),
+	 pct_2020_02_2020_03  = 100*round(traj_2020_02_2020_03/tot_2020_02_2020_03, 2), 
+         pct_2020_03_2020_04  = 100*round(traj_2020_03_2020_04/tot_2020_03_2020_04, 2),
+         pct_2020_04_2020_05  = 100*round(traj_2020_04_2020_05/tot_2020_04_2020_05, 2), 
+         pct_2020_05_2020_06  = 100*round(traj_2020_05_2020_06/tot_2020_05_2020_06, 2),
+         pct_2020_06_2020_07  = 100*round(traj_2020_06_2020_07/tot_2020_06_2020_07, 2),
+         pct_2020_07_2020_08  = 100*round(traj_2020_07_2020_08/tot_2020_07_2020_08, 2),
+         pct_2020_08_2020_09  = 100*round(traj_2020_08_2020_09/tot_2020_08_2020_09, 2),
+         pct_2020_09_2020_10  = 100*round(traj_2020_09_2020_10/tot_2020_09_2020_10, 2),
+         pct_2020_10_2020_11  = 100*round(traj_2020_10_2020_11/tot_2020_10_2020_11, 2),
+         pct_2020_11_2020_12  = 100*round(traj_2020_11_2020_12/tot_2020_11_2020_12, 2),
+         pct_2020_12_2021_01  = 100*round(traj_2020_12_2021_01/tot_2020_12_2021_01, 2),
+	 pct_2021_01_2021_02  = 100*round(traj_2021_01_2021_02/tot_2021_01_2021_02, 2),
+	 pct_2021_02_2021_03  = 100*round(traj_2021_02_2021_03/tot_2021_02_2021_03, 2), 
+         pct_2021_03_2021_04  = 100*round(traj_2021_03_2021_04/tot_2021_03_2021_04, 2),
+         pct_2021_04_2021_05  = 100*round(traj_2021_04_2021_05/tot_2021_04_2021_05, 2)) %>% dplyr::select(traj_titles, traj_2020_01_2020_02:traj_2021_04_2021_05, pct_2020_01_2020_02:pct_2021_04_2021_05) %>% 
+  pivot_longer(cols = -traj_titles, names_to = "month_change", values_to = "change") %>%
+  mutate(stat = case_when(
+	str_detect(month_change, pattern="pct") == TRUE ~ "pct_change",
+        str_detect(month_change, pattern="traj") == TRUE ~ "count_change"
+        ),
+        month = case_when(
+        str_detect(month_change, pattern="2020_01_2020_02") == TRUE ~ "Jan20 to Feb20",
+        str_detect(month_change, pattern="2020_02_2020_03") == TRUE ~ "Feb20 to Mar20",
+        str_detect(month_change, pattern="2020_03_2020_04") == TRUE ~ "Mar20 to Apr20",
+        str_detect(month_change, pattern="2020_04_2020_05") == TRUE ~ "Apr20 to May20",
+        str_detect(month_change, pattern="2020_05_2020_06") == TRUE ~ "May20 to Jun20",
+        str_detect(month_change, pattern="2020_06_2020_07") == TRUE ~ "Jun20 to Jul20",
+        str_detect(month_change, pattern="2020_07_2020_08") == TRUE ~ "Jul20 to Aug20",
+        str_detect(month_change, pattern="2020_08_2020_09") == TRUE ~ "Aug20 to Sep20",
+        str_detect(month_change, pattern="2020_09_2020_10") == TRUE ~ "Sep20 to Oct20",
+        str_detect(month_change, pattern="2020_10_2020_11") == TRUE ~ "Oct20 to Nov20",
+        str_detect(month_change, pattern="2020_11_2020_12") == TRUE ~ "Nov20 to Dec20",
+        str_detect(month_change, pattern="2020_12_2021_01") == TRUE ~ "Dec20 to Jan21",
+        str_detect(month_change, pattern="2021_01_2021_02") == TRUE ~ "Jan21 to Feb21",
+        str_detect(month_change, pattern="2021_02_2021_03") == TRUE ~ "Feb21 to Mar21",
+        str_detect(month_change, pattern="2021_03_2021_04") == TRUE ~ "Mar21 to Apr21",
+        str_detect(month_change, pattern="2021_04_2021_05") == TRUE ~ "Apr21 to May21")) %>%         pivot_wider(id_cols = c(month, traj_titles), names_from = stat, values_from = change) %>% 
+  mutate(month = fct_relevel(month,
+			     "Jan20 to Feb20",
+                             "Feb20 to Mar20",
+                             "Mar20 to Apr20",
+                             "Apr20 to May20",
+                             "May20 to Jun20",
+                             "Jun20 to Jul20",
+                             "Jul20 to Aug20",
+                             "Aug20 to Sep20",
+                             "Sep20 to Oct20",
+                             "Oct20 to Nov20",
+                             "Nov20 to Dec20",
+                             "Dec20 to Jan21",
+			     "Jan21 to Feb21",
+                             "Feb21 to Mar21",
+                             "Mar21 to Apr21",
+                             "Apr21 to May21"),
+         pct_change = paste(abs(pct_change), "%", sep = ""))
+
+# Create base plot of the count and pct changes.
+change_ggplot <- ggplot(data = change_df) +
+  geom_bar(mapping = aes(x = month, y = count_change,
+                         group = traj_titles, fill = traj_titles), stat = "identity", position = "dodge") +
+  geom_text(mapping = aes(x = month, y = count_change, group = traj_titles, label = pct_change),
+            position = position_dodge(width = 0.9), size = 1.7,  vjust = -1.5) +
+  # ylim(100, -100) +
+  labs(y = "Monthly crime count change per cluster", x = NULL, fill = NULL) +
+  scale_x_discrete(labels = c("Jan20 to Feb20","Feb20 to Mar20", "Mar20 to Apr20", "Apr20 to May20", "May20 to Jun20", "Jun20 to Jul20", "Jul20 to Aug20", "Aug20 to Sep20", "Sep20 to Oct20", "Oct20 to Nov20", "Nov20 to Dec20","Dec20 to Jan21","Jan21 to Feb21","Feb21 to Mar21","Mar21 to Apr21","Apr21 to May21")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 8),legend.position = "bottom")
+plot(change_ggplot)
+
+ggsave(plot = change_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/change_ggplot.jpg", width = 35, height = 16, unit = "cm")
+
+
+# Annotate the base plot.
+change_ann_ggplot <- change_ggplot +
+  annotate(geom = "text", x = 1.5, y = 14000, size = 3, label = "Percentage of nationwide \n absolute monthly change \n attributable to cluster") +
+  annotate(geom = "curve", x = 2.15, xend = 2.65, y = 14500, yend = 15000, curvature = -0.1, arrow = arrow(length = unit(1, "mm"))) +
+  annotate(geom = "text", x = 3.5, y = -11000, size = 3,
+           label = "15% of the lockdown drop  \n between March and April \n attributable to just 110 LSOA") +
+  annotate(geom = "curve", x = 3.5, xend = 2.52, y = -9000, yend = -3000, curvature = 0.2, arrow = arrow(length = unit(1, "mm"))) +
+  annotate(geom = "curve", x = 3.5, xend = 2.32, y = -9000, yend = -6000, curvature = 0.2, arrow = arrow(length = unit(1, "mm"))) +
+  annotate(geom = "text", x = 5, y = -8000, size = 3, label = "Further nationwide increase \n partially offset") +
+  annotate(geom = "curve", x = 5.2, xend = 5.6, y = -6500, yend = -1300, curvature = -0.3, arrow = arrow(length = unit(1, "mm")))
+
+# Save count and % change plot.
+ggsave(plot = change_ann_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/change_k6_gg.png", width = 18, height = 16, unit = "cm")
+
+
+# Calculate crime composition of each cluster.
+
+# Subset only the study period Jan to Dec 2020, calculate crime type % composition of each cluster.
+traj_crimetype_df <- data_agg_cluster_df %>% 
+  filter(month == "2020-01" | month == "2020-02" | month == "2020-03" | month == "2020-04" | month == "2020-05" | month == "2020-06" | month == "2020-07" | month == "2020-08"
+| month == "2020-09" | month == "2020-10" | month == "2020-11" | month == "2020-12") %>% 
+  group_by(traj, month) %>% 
+  mutate(traj_total_crimes = sum(crime_count)) %>% 
+  ungroup() %>% 
+  group_by(crime_type, traj, month) %>% 
+  mutate(traj_monthly_crime = sum(crime_count)) %>% 
+  ungroup() %>% 
+  mutate(traj_monthly_pct = traj_monthly_crime/traj_total_crimes) %>% 
+  distinct(crime_type, month, traj, traj_monthly_pct) %>% 
+  arrange(month, traj)
+
+# Check.
+check_df <- traj_crimetype_df %>% 
+  group_by(traj, month) %>% 
+  summarise(totals = sum(traj_monthly_pct))
+
+# Retrieve full cluster names for plot - too big earlier. Obtain individual names.
+traj_names_df <- kmeans_clusters_df %>% 
+  distinct(traj, traj_titles)
+
+# Join with data.
+traj_crimetype_df <- traj_crimetype_df %>% 
+  inner_join(traj_names_df)
+
+# Plot.
+trajcrimes_ggplot <- ggplot(data = traj_crimetype_df) + 
+  theme_bw() +
+  geom_bar(mapping = aes(x = month, y = traj_monthly_pct, group = crime_type, fill = crime_type),
+            stat = "identity", colour = "black", size = 0.2) +
+  facet_wrap(~traj_titles, ncol = 6) +
+  labs(y = "Proportion comprising total crime", x = NULL, fill = NULL) +
+  scale_x_discrete(labels = c(str_extract(month.name[1:12], "^.{3}"), character(1))) +
+  guides(fill = guide_legend(nrow = 2)) +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 5),
+        strip.background = element_rect(fill = "transparent", size = 0.2),
+        strip.text = element_text(size = 6),
+        axis.text.y = element_text(size = 5),
+        axis.text.x = element_text(size = 5, angle = 90, vjust = 0.2),
+        axis.title = element_text(size = 6),
+        axis.ticks = element_line(size = 0.3),
+        panel.border = element_rect(size = 0.3),
+        legend.key.width = unit(0.3, "cm"),
+        legend.key.height = unit(0.3, "cm"))
+plot(trajcrimes_ggplot)
+
+# Save.
+ggsave(plot = trajcrimes_ggplot, filename = "C:/Users/steph/Desktop/CIS/MScProject/data/visuals/traj_trajcrimes_ggplot.jpg", width = 16, height = 8, unit = "cm")
+
+
+# download compiled oms_crime dataset
+osm_crime_df <- read_csv("C:\\Users\\steph\\Desktop\\CIS\\MScProject\\data\\data\\msoa_crimetype_osm_per_month_police.csv")
+
+
+install.packages("devtools")
+library(devtools)
+install_github("dustinfife/fifer")
+
+# bind crime oppo structures to clusters
+osm_crime_df <- read_csv("C:\\Users\\steph\\Desktop\\CIS\\MScProject\\data\\data\\msoa_crimetype_osm_total_police.csv")
+
+osm_msoa_df <- cbind.data.frame(osm_crime_df[1],osm_crime_df[16:33])
+
+osm_clusters_df <- inner_join(osm_msoa_df,clusters_df)
+
+total_osm_clusters_df <- osm_clusters_df %>% mutate(total_structures = rowSums(osm_clusters_df[2:19]))
+
+sub_osm_clusters_df <- total_osm_clusters_df %>% group_by(traj) %>% 
+    summarise(pubs_mean = mean(pubs),       nightclubs_mean = mean(nightclubs),   nightlife_total_mean = mean(nightlife_total),
+restaurants_mean = mean(restaurants),
+shoe_shops_mean = mean(shoe_shops),
+deps_shops_mean = mean(deps_shops),
+supermarks_shops_mean = mean(supermarks_shops),
+clothes_shops_mean = mean(clothes_shops),
+shops_total_mean = mean(shops_total),
+trains_mean = mean(trains),
+train_bin_mean = mean(train_bin),
+bus_mean = mean(bus),
+bikes_mean = mean(bikes),
+car_spaces_mean = mean(car_spaces),
+car_parkings_mean = mean(car_parkings),
+moto_parkings_mean = mean(moto_parkings),
+conveniences_mean = mean(conveniences),
+total_structures_mean = mean(total_structures)
+) 
+
+# spearmann plot btw the clusters and the total structures mean.
+# This function plots the ranks of the data, while plotting along the axes the distributions of the raw data.
+spearman.plot(x=sub_osm_clusters_df$traj,y=sub_osm_clusters_df$total_structures_mean)
